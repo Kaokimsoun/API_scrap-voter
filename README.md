@@ -1,6 +1,6 @@
-# 🗳️ Voter NID Lookup API
+# Voter NID Lookup API
 
-## 📖 Description
+## Description
 
 The **Voter NID Lookup API** is a backend service built with FastAPI that allows users to search Cambodian voter information using a National ID (NID).
 
@@ -10,7 +10,7 @@ This approach improves performance, reduces repeated web scraping, and ensures e
 
 ---
 
-## 🚀 Technologies Used
+## Technologies Used
 
 * SQLite (local database storage)
 * Selenium (web scraping automation)
@@ -25,7 +25,6 @@ This approach improves performance, reduces repeated web scraping, and ensures e
 * Automatic database caching (faster repeated queries)
 * Web scraping fallback using Selenium
 * Store and reuse data locally
-* CLI support for testing without API
 * Structured JSON response
 
 ---
@@ -120,7 +119,7 @@ Response:
 
 ```json
 {
-  "message": "✅ Voter NID API is running",
+  "message": "Voter NID API is running",
   "endpoint": "/api/search-nid"
 }
 ```
@@ -143,7 +142,7 @@ Request:
 
 ---
 
-### 🔍 Search Single NID
+### Search Single NID
 
 ```
 POST /search
@@ -159,9 +158,7 @@ Request:
 
 ---
 
-## 🧪 CLI Testing
-
-Run without API:
+## Testing in CMD
 
 ```bash
 python test_and_scrap.py
@@ -186,7 +183,7 @@ Enter NID(s), separated by commas: 051491501
 
 ---
 
-## 🧱 Architecture
+## Architecture
 
 ```
 ┌─────────────────┐
@@ -235,13 +232,3 @@ Enter NID(s), separated by commas: 051491501
                         │ (JSON Output)  │
                         └────────────────┘
 ```
-
----
-
-## ⚠️ Notes
-
-* Requires Google Chrome installed
-* ChromeDriver must match your Chrome version
-* You can enable headless mode in `main.py` for better performance
-
----
