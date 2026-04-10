@@ -1,22 +1,19 @@
+import requests
 import json
-from db import get_from_db, insert_to_db
-from main import run_selenium
+
+API_URL = "http://127.0.0.1:8000/api/search-nid"
+
+def main():
+    nids = input("Enter NID(s), separated by commas: ").split(",")
+    nids = [nid.strip() for nid in nids]
+
+    response = requests.post(API_URL, json={"nids": nids})
+
+    if response.status_code == 200:
+        print("\nResult (JSON):")
+        print(json.dumps(response.json(), indent=4, ensure_ascii=False))
+    else:
+        print("Error:", response.status_code, response.text)
 
 if __name__ == "__main__":
-    nids_input = input("Enter NID(s), separated by commas: ").strip()
-    nids = [nid.strip() for nid in nids_input.split(",") if nid.strip()]
-
-    db_results, missing_nids = get_from_db(nids)
-
-    selenium_results = run_selenium(missing_nids) if missing_nids else []
-    insert_to_db(selenium_results)
-
-    final_results = db_results + selenium_results
-
-    output = {
-        "count": len(final_results),
-        "data": final_results,
-        "status": "success" if final_results else "fail"
-    }
-
-    print(json.dumps(output, ensure_ascii=False, indent=2))
+    main()
