@@ -1,4 +1,3 @@
-# db.py
 import sqlite3
 
 DB_PATH = "voters.db"
