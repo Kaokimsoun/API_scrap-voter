@@ -1,36 +1,48 @@
 # 🗳️ Voter NID Lookup API
 
-This project is a FastAPI-based service that allows users to search Cambodian voter information by NID (National ID).  
-It uses:
+## 📖 Description
 
-- SQLite database (local storage)
-- Selenium (web scraping from NEC website)
-- FastAPI (API service)
+The **Voter NID Lookup API** is a backend service built with FastAPI that allows users to search Cambodian voter information using a National ID (NID).
 
----
+The system is designed with a **cache-first architecture**, meaning it first checks a local SQLite database for existing records. If the requested NID is not found, the system automatically retrieves the data from the official NEC voter website using Selenium, then stores it locally for faster future access.
 
-## Features
-
-- Search single or multiple NIDs
-- Automatically checks local database first
-- If not found → scrape from website using Selenium
-- Save scraped data into SQLite database
-- Reuse stored data for faster future queries
+This approach improves performance, reduces repeated web scraping, and ensures efficient data retrieval.
 
 ---
 
-## Project Structure
+## 🚀 Technologies Used
 
+* SQLite (local database storage)
+* Selenium (web scraping automation)
+* FastAPI (REST API framework)
+* Pydantic (data validation)
+
+---
+
+## ✨ Features
+
+* Search single or multiple NIDs
+* Automatic database caching (faster repeated queries)
+* Web scraping fallback using Selenium
+* Store and reuse data locally
+* CLI support for testing without API
+* Structured JSON response
+
+---
+
+## 📁 Project Structure
+
+```
 project/
 │
-├── main.py # FastAPI application
-├── db.py # Database logic (SQLite)
-├── test_and_scrap.py # CLI testing script
-├── schema.sql # Database schema
-├── voters.db # SQLite database (generated)
-├── requirements.txt # Python dependencies
-└── README.md # Documentation
-
+├── main.py              # FastAPI application
+├── db.py                # Database logic (SQLite)
+├── test_and_scrap.py    # CLI testing script
+├── schema.sql           # Database schema
+├── voters.db            # SQLite database (generated)
+├── requirements.txt     # Dependencies
+└── README.md            # Documentation
+```
 
 ---
 
@@ -40,76 +52,143 @@ project/
 
 ```bash
 python -m venv .venv
+```
 
-- Window:
+Activate:
 
+**Windows**
+
+```bash
 .venv\Scripts\activate
+```
 
-- Mac/Linux:
+**Mac/Linux**
 
+```bash
 source .venv/bin/activate
+```
 
-2. Install Dependencies
+---
 
+### 2. Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-3. Setup Database
+---
 
-Run SQLite and execute schema:
+### 3. Setup Database
+
+```bash
 sqlite3 voters.db
 .read schema.sql
+```
 
-OR inside SQLite:
+OR:
+
+```sql
 .open voters.db
 .read schema.sql
+```
 
-4. Run API Server
+---
+
+### 4. Run API Server
+
+```bash
 uvicorn main:app --reload
-Open browser:
+```
 
+Open in browser:
+
+```
 http://127.0.0.1:8000/docs
-📡 API Endpoints
-✅ Health Check
+```
+
+---
+
+## 📡 API Endpoints
+
+### ✅ Health Check
+
+```
 GET /
+```
 
 Response:
 
+```json
 {
   "message": "✅ Voter NID API is running",
   "endpoint": "/api/search-nid"
 }
-🔍 Search Multiple NIDs
+```
+
+---
+
+### 🔍 Search Multiple NIDs
+
+```
 POST /api/search-nid
+```
 
 Request:
 
+```json
 {
   "nids": ["051491501", "123456789"]
 }
-🔍 Search Single NID
+```
+
+---
+
+### 🔍 Search Single NID
+
+```
 POST /search
+```
 
 Request:
 
+```json
 {
   "nid": "051491501"
 }
-🧪 Run CLI Test (Without API)
+```
+
+---
+
+## 🧪 CLI Testing
+
+Run without API:
+
+```bash
 python test_and_scrap.py
+```
 
-Input:
+Example:
 
+```
 Enter NID(s), separated by commas: 051491501
-🔄 How It Works
-User sends NID(s)
-System checks SQLite database
-If found → return immediately
-If not found → Selenium scrapes from website
-Save new data into database
-Return combined results
+```
 
-Architecture
+---
 
+## 🔄 How It Works
+
+1. User sends NID(s)
+2. System checks SQLite database (cache)
+3. If found → return immediately
+4. If not found → Selenium scrapes NEC website
+5. Store new data into database
+6. Return combined results
+
+---
+
+## 🧱 Architecture
+
+```
 ┌─────────────────┐
 │   API Request   │
 │ (Client / CLI)  │
@@ -117,12 +196,11 @@ Architecture
          │
     ┌────▼─────┐
     │ FastAPI  │
-    │ (main.py)│
     └────┬─────┘
          │
     ┌────▼──────────────┐
     │ Check Database    │
-    │ (db.py - SQLite)  │
+    │ (SQLite Cache)    │
     └────┬───────┬──────┘
          │       │
    Cache Hit   Cache Miss
@@ -156,3 +234,14 @@ Architecture
                         │ Return Response│
                         │ (JSON Output)  │
                         └────────────────┘
+```
+
+---
+
+## ⚠️ Notes
+
+* Requires Google Chrome installed
+* ChromeDriver must match your Chrome version
+* You can enable headless mode in `main.py` for better performance
+
+---
